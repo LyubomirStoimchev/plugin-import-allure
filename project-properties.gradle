@@ -6,7 +6,7 @@ java {
 def commonScriptsUrl = 'https://raw.githubusercontent.com/reportportal/gradle-scripts/'
 
 project.ext {
-    publishRepo = "https://maven.pkg.github.com/reportportal/plugin-import-junit"
+    publishRepo = "https://maven.pkg.github.com/reportportal/plugin-import-allure"
     releaseMode = project.hasProperty("releaseMode")
     pluginsDir = "$buildDir/plugins"
     scriptsUrl = commonScriptsUrl + (releaseMode ? getProperty('scripts.version') : 'develop')

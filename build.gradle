@@ -54,6 +54,8 @@ dependencies {
         implementation 'com.github.reportportal:plugin-api:8874441'
         annotationProcessor 'com.github.reportportal:plugin-api:8874441'
     }
+    implementation 'org.springframework:spring-test'
+
 }
 
 test {
@@ -98,7 +100,7 @@ jar {
                 "Plugin-Id": "${pluginId}",
                 "Plugin-Version": "${project.version}",
                 "Plugin-Provider": "Report Portal",
-                "Plugin-Class": "com.epam.reportportal.extension.importing.ImportXUnitPlugin",
+                "Plugin-Class": "com.epam.reportportal.extension.allure.ImportAllurePlugin",
                 "Plugin-Service": "api"
         )
     }
