@@ -229,9 +229,16 @@ public class AllureZipImportStrategy extends AbstractImportStrategy {
                     testStartRq.setStartTime(result.getStart() != null
                             ? Instant.ofEpochMilli(result.getStart())
                             : Instant.now());
+                    // Add test name as attribute
+                    Set<ItemAttributesRQ> attributes = new HashSet<>();
+
+                    ItemAttributesRQ testAttr = new ItemAttributesRQ();
+                    testAttr.setKey("test");
+                    testAttr.setValue(result.getName().replace(' ', '_').replace(':', '_').replace(',', '_'));
+                    attributes.add(testAttr);
+
                     // Map Allure labels to RP attributes (excluding suite grouping labels)
                     if (result.getLabels() != null) {
-                        Set<ItemAttributesRQ> attributes = new HashSet<>();
                         for (Label label : result.getLabels()) {
                             String name = label.getName();
                             String value = label.getValue();
@@ -250,10 +257,17 @@ public class AllureZipImportStrategy extends AbstractImportStrategy {
                                     attr.setValue(value);
                                 }
                                 attributes.add(attr);
-                                testStartRq.setAttributes(attributes);
+                            } else if ("feature".equals(name)) {
+                                attr.setKey(name);
+                                attr.setValue(value.replace(' ', '_').replace(':', '_').replace(',', '_'));
+
+                                attributes.add(attr);
                             }
                         }
                     }
+
+                    testStartRq.setAttributes(attributes);
+
                     _eventPublisher.publishEvent(new StartChildItemRqEvent(this, projectName, featureItemId, testStartRq));
                     String scenarioItemUuid = testStartRq.getUuid();
 
