@@ -237,17 +237,22 @@ public class AllureZipImportStrategy extends AbstractImportStrategy {
                             String value = label.getValue();
                             if ("parentSuite".equals(name) || "suite".equals(name) || "subSuite".equals(name)) continue;
                             ItemAttributesRQ attr = new ItemAttributesRQ();
-                            if ("tag".equals(name) || name == null || name.isEmpty()) {
-                                // treat as an unkeyed tag
-                                attr.setKey(null);
-                                attr.setValue(value);
-                            } else {
-                                attr.setKey(name);
-                                attr.setValue(value);
+                            if ("tag".equals(name)) {
+                                if (value.contains(":")) {
+                                    String[] parts = value.split(":", 2); // Split the value into two parts
+                                    attr.setKey(parts[0].trim());
+                                    // Set the first part as the key
+                                    attr.setValue(parts[1].trim());
+                                    // Set the second part as the value
+                                } else {
+                                    attr.setKey(null);
+                                    // Set key as null for unkeyed tag
+                                    attr.setValue(value);
+                                }
+                                attributes.add(attr);
+                                testStartRq.setAttributes(attributes);
                             }
-                            attributes.add(attr);
                         }
-                        testStartRq.setAttributes(attributes);
                     }
                     _eventPublisher.publishEvent(new StartChildItemRqEvent(this, projectName, featureItemId, testStartRq));
                     String scenarioItemUuid = testStartRq.getUuid();
